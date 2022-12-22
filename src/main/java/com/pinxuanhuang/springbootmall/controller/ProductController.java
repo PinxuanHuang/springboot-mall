@@ -19,7 +19,7 @@ public class ProductController {
     @GetMapping("products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {
         Product product = productService.getProductById(productId);
-        if(product != null) {
+        if (product != null) {
             return ResponseEntity.status(HttpStatus.OK).body(product);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
+    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         Integer productId = productService.createProduct(productRequest);
         Product product = productService.getProductById(productId);
 
@@ -39,7 +39,7 @@ public class ProductController {
                                                  @RequestBody @Valid ProductRequest productRequest) {
         // check whether the product is existed or not
         Product product = productService.getProductById(productId);
-        if(product == null){
+        if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -47,5 +47,11 @@ public class ProductController {
         productService.updateProduct(productId, productRequest);
         Product updatedProduct = productService.getProductById(productId);
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+        productService.deleteProductById(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
