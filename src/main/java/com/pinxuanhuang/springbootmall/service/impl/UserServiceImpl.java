@@ -1,6 +1,7 @@
 package com.pinxuanhuang.springbootmall.service.impl;
 
 import com.pinxuanhuang.springbootmall.dao.UserDao;
+import com.pinxuanhuang.springbootmall.dto.UserLoginRequest;
 import com.pinxuanhuang.springbootmall.dto.UserRegisterRequest;
 import com.pinxuanhuang.springbootmall.model.User;
 import com.pinxuanhuang.springbootmall.service.UserService;
@@ -17,6 +18,21 @@ public class UserServiceImpl implements UserService {
     private final static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDao userDao;
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest){
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+        if(user == null){
+            log.warn("{} has not registered yet.", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if(user.getPassword().equals(userLoginRequest.getPassword())){
+            return user;
+        } else {
+            log.warn("email {}'s password is not correct.", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Override
     public User getUserById(Integer userId){
